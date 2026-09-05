@@ -70,6 +70,8 @@ jobs:
   model-training:
     needs: data-prep
     runs-on: ubuntu-latest
+    env:
+      MLFLOW_ALLOW_FILE_STORE: "true"
 
     steps:
       - uses: actions/checkout@v4
