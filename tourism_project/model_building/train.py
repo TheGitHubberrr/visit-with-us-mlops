@@ -43,10 +43,10 @@ numerical_columns = Xtrain.select_dtypes(
     exclude=["object"]
 ).columns.tolist()
 
-print("\nCategorical columns:")
+print(f"\nCategorical columns:")
 print(categorical_columns)
 
-print("\nNumerical columns:")
+print(f"\nNumerical columns:")
 print(numerical_columns)
 
 # --------------------------------------------------
@@ -122,7 +122,7 @@ with mlflow.start_run(run_name="RandomForest_GridSearch"):
     best_model = grid_search.best_estimator_
     best_params = grid_search.best_params_
 
-    print("\nBest parameters:")
+    print(f"\nBest parameters:")
     print(best_params)
 
     # --------------------------------------------------
@@ -138,18 +138,18 @@ with mlflow.start_run(run_name="RandomForest_GridSearch"):
     f1 = f1_score(ytest, y_pred, zero_division=0)
     roc_auc = roc_auc_score(ytest, y_prob)
 
-    print("\nModel Evaluation")
+    print(f"\nModel Evaluation")
     print("----------------")
-    print("Accuracy :", round(accuracy, 4))
-    print("Precision:", round(precision, 4))
-    print("Recall   :", round(recall, 4))
-    print("F1 Score :", round(f1, 4))
-    print("ROC-AUC  :", round(roc_auc, 4))
+    print(f"Accuracy :{round(accuracy, 4)}")
+    print(f"Precision:{round(precision, 4)}")
+    print(f"Recall   :{round(recall, 4)}")
+    print(f"F1 Score :{round(f1, 4)}")
+    print(f"ROC-AUC  :{round(roc_auc, 4)}")
 
-    print("\nConfusion Matrix:")
+    print(f"\nConfusion Matrix:")
     print(confusion_matrix(ytest, y_pred))
 
-    print("\nClassification Report:")
+    print(f"\nClassification Report:")
     print(classification_report(ytest, y_pred, zero_division=0))
 
     # --------------------------------------------------
@@ -174,20 +174,21 @@ with mlflow.start_run(run_name="RandomForest_GridSearch"):
     # Log the complete preprocessing + model pipeline
     mlflow.sklearn.log_model(
         best_model,
-        "model"
+        artifact_path="model",
+        serialization_format="cloudpickle"
     )
 
-    # --------------------------------------------------
-    # 10. Save best model for deployment
-    # --------------------------------------------------
+# --------------------------------------------------
+# 10. Save best model for deployment
+# --------------------------------------------------
 
-    os.makedirs("tourism_project/deployment", exist_ok=True)
+os.makedirs("tourism_project/deployment", exist_ok=True)
 
-    model_path = "tourism_project/deployment/best_model.pkl"
+model_path = "tourism_project/deployment/best_model.pkl"
 
-    joblib.dump(best_model, model_path)
+joblib.dump(best_model, model_path)
 
-    print("\nBest model saved to:")
-    print(model_path)
+print(f"\nBest model saved to:")
+print(model_path)
 
-print("\nModel training completed successfully!")
+print(f"\nModel training completed successfully!")
